@@ -16,8 +16,10 @@ services:
     depends_on:
       - db
     volumes:
-      - ./static:/app/staticfiles
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media  # Add this line
     env_file:
       - .env.prod
+
 volumes:
   postgres_data:
