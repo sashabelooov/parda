@@ -24,6 +24,9 @@ else:
     print("Superuser exists or env not provided; skipping.")
 PY
 
+echo "import excel data"
+python manage.py import_excel
+
 
 echo "Starting Gunicorn..."
 gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120
