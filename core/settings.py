@@ -29,6 +29,9 @@ if not DEBUG:
     if https_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(https_origin)
 
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'parda',
-    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +57,6 @@ MIDDLEWARE = [
 ]
 
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
 
 ROOT_URLCONF = 'core.urls'
 
