@@ -17,8 +17,10 @@ services:
       - db
     volumes:
       - ./staticfiles:/app/staticfiles
+      - parda-volume:/app/media
     env_file:
       - .env.prod
 
 volumes:
   postgres_data:
+  parda-volume:

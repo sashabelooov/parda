@@ -27,6 +27,9 @@ PY
 echo "import excel data"
 python manage.py import_excel
 
+mkdir -p /app/media/curtains
+chmod -R 777 /app/media
+
 
 echo "Starting Gunicorn..."
 gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120

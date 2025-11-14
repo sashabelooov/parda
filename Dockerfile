@@ -33,7 +33,7 @@ RUN mkdir -p /app/staticfiles /app/media && \
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-USER appuser
+# USER appuser
 
 EXPOSE 8000
 
