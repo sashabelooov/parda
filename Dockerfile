@@ -30,10 +30,15 @@ RUN mkdir -p /app/staticfiles /app/media && \
     chown -R appuser:appuser /app/staticfiles /app/media && \
     chmod -R 777 /app/staticfiles /app/media
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libjpeg62-turbo-dev zlib1g-dev libwebp-dev libpng-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# USER appuser
+USER appuser
 
 EXPOSE 8000
 

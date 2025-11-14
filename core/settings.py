@@ -16,13 +16,13 @@ ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]
 
 CSRF_TRUSTED_ORIGINS = os.getenv(
     'CSRF_TRUSTED_ORIGINS',
-    'https://curtainsproject-production.up.railway.app,http://localhost:8000'
+    'https://parda-production.up.railway.app,http://localhost:8000'
 ).split(',')
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS]
 
 
 if not DEBUG:
-    domain = 'curtainsproject-production.up.railway.app'
+    domain = 'parda-production.up.railway.app'
     if domain not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(domain)
     https_origin = f'https://{domain}'
