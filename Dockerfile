@@ -28,7 +28,7 @@ COPY --chown=appuser:appuser . .
 # Create both staticfiles and media directories with proper permissions
 RUN mkdir -p /app/staticfiles /app/media && \
     chown -R appuser:appuser /app/staticfiles /app/media && \
-    chmod -R 755 /app/staticfiles /app/media
+    chmod -R 777 /app/staticfiles /app/media
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
