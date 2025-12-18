@@ -44,17 +44,33 @@ fi
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput
 
-# Create a default superuser if no superuser exists (idempotent).
+# Create a default superuser if env var CREATE_DEFAULT_SUPERUSER is set and no superuser exists (idempotent).
 # Credentials: username=admin, password=12, email=admin@example.com
-python - <<'PY'
+if [ "${CREATE_DEFAULT_SUPERUSER:-0}" = "1" ] || [ "${CREATE_DEFAULT_SUPERUSER:-0}" = "true" ]; then
+  python - <<'PY'
 from django.contrib.auth import get_user_model
+import os
 User = get_user_model()
 if not User.objects.filter(is_superuser=True).exists():
     print('No superuser found; creating default admin user')
-    User.objects.create_superuser('admin', 'admin@example.com', '12')
+    username = os.environ.get('DEFAULT_SUPERUSER_USERNAME', 'admin')
+    password = os.environ.get('DEFAULT_SUPERUSER_PASSWORD', '12')
+    email = os.environ.get('DEFAULT_SUPERUSER_EMAIL', 'admin@example.com')
+    User.objects.create_superuser(username, email, password)
 else:
     print('Superuser already exists; skipping default admin creation')
 PY
+else
+  echo "CREATE_DEFAULT_SUPERUSER not set; skipping default admin creation"
+fi
+
+# Run import_excel management command if the Excel file exists
+if [ -f data/ОСТАТКИ.xlsx ]; then
+  echo "Found Excel file; running python manage.py import_excel"
+  python manage.py import_excel || echo "Import failed or returned non-zero; continuing"
+else
+  echo "No Excel file found at data/ОСТАТКИ.xlsx; skipping import"
+fi
 
 # Exec the CMD from Dockerfile (gunicorn)
 exec "$@"
