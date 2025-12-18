@@ -131,6 +131,41 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 MEDIA_URL = os.environ.get('MEDIA_URL', '/curtains/')
 MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'curtains')))
 
+# Ensure MEDIA_ROOT is inside the project and writable. If a relative path was
+# provided, resolve it against BASE_DIR. If the resolved path is outside of
+# BASE_DIR, fall back to BASE_DIR/'curtains'. Create the directory if missing
+# and attempt to make it writable.
+try:
+    import warnings
+
+    _media_root = Path(MEDIA_ROOT)
+    if not _media_root.is_absolute():
+        _media_root = (BASE_DIR / _media_root).resolve()
+
+    # If resolved MEDIA_ROOT is not inside BASE_DIR, fallback
+    base_resolved = BASE_DIR.resolve()
+    if _media_root != base_resolved and base_resolved not in list(_media_root.parents):
+        warnings.warn(
+            f"MEDIA_ROOT '{_media_root}' is outside project BASE_DIR; using BASE_DIR/'curtains' instead."
+        )
+        _media_root = (BASE_DIR / 'curtains').resolve()
+
+    # Create directory and ensure writable
+    _media_root.mkdir(parents=True, exist_ok=True)
+    try:
+        if not os.access(str(_media_root), os.W_OK):
+            _media_root.chmod(0o755)
+    except Exception:
+        warnings.warn(f"Could not set permissions on MEDIA_ROOT '{_media_root}'.")
+
+    MEDIA_ROOT = _media_root
+except Exception as exc:
+    import warnings
+
+    warnings.warn(f"Error configuring MEDIA_ROOT: {exc}. Falling back to BASE_DIR/'curtains'.")
+    MEDIA_ROOT = (BASE_DIR / 'curtains')
+    MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
