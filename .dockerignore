@@ -1,0 +1,13 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.git
+.gitignore
+db.sqlite3
+staticfiles
+/media
+curtains/*.webp
+curtains/parda_images/*
