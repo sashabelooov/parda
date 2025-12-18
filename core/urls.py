@@ -18,12 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from parda.views import health, health_json
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    # Default root redirects to the admin panel
+    path('', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin/', admin.site.urls),
-    path('health/', health, name='health'),
-    path('health.json', health_json, name='health_json'),
 ]
 
 if settings.DEBUG:
