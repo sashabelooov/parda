@@ -8,3 +8,4 @@ pandas
 openpyxl
 boto3
 django-storages
+jazzmin

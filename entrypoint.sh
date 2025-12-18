@@ -44,5 +44,17 @@ fi
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput
 
+# Create a default superuser if no superuser exists (idempotent).
+# Credentials: username=admin, password=12, email=admin@example.com
+python - <<'PY'
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(is_superuser=True).exists():
+    print('No superuser found; creating default admin user')
+    User.objects.create_superuser('admin', 'admin@example.com', '12')
+else:
+    print('Superuser already exists; skipping default admin creation')
+PY
+
 # Exec the CMD from Dockerfile (gunicorn)
 exec "$@"
