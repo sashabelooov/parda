@@ -1,0 +1,10 @@
+Django>=6.0,<7.0
+gunicorn
+whitenoise
+dj-database-url
+psycopg2-binary
+python-dotenv
+pandas
+openpyxl
+boto3
+django-storages

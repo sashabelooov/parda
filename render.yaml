@@ -1,0 +1,16 @@
+# Optional: Render service configuration example (edit before using)
+services:
+  - type: web
+    name: parda-web
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn core.wsgi --bind 0.0.0.0:$PORT --workers 3
+    plan: starter
+    envVars:
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+    releaseCommand: python manage.py migrate && python manage.py collectstatic --noinput
