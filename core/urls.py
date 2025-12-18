@@ -18,9 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from parda.views import health, health_json
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('health/', health, name='health'),
+    path('health.json', health_json, name='health_json'),
 ]
 
 if settings.DEBUG:

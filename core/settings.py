@@ -133,8 +133,21 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Media files (uploaded images etc.)
 # In this project the default dev media location is `curtains/`. For production,
 # set MEDIA_URL and MEDIA_ROOT via environment variables if needed.
-MEDIA_URL = os.environ.get('MEDIA_URL', '/curtains/')
-MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'curtains')))
+USE_S3 = os.environ.get('USE_S3', 'False').lower() in ('1', 'true', 'yes')
+
+if USE_S3:
+    # S3-backed media (django-storages)
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
+    MEDIA_URL = os.environ.get('MEDIA_URL', f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/')
+    MEDIA_ROOT = None
+else:
+    MEDIA_URL = os.environ.get('MEDIA_URL', '/curtains/')
+    MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'curtains')))
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
