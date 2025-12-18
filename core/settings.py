@@ -1,12 +1,17 @@
 import os
 from pathlib import Path
-try:
-    import dj_database_url
-except Exception:
-    dj_database_url = None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load local .env for development (if present). This allows DEBUG and other
+# settings to be provided from a .env file without requiring explicit export.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=BASE_DIR / '.env')
+except Exception:
+    # If python-dotenv isn't installed or .env doesn't exist, silently continue
+    pass
 
 
 # Quick-start development settings - unsuitable for production
@@ -42,8 +47,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise should be placed directly after SecurityMiddleware
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,19 +79,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# Database
-# Use DATABASE_URL env var when available (Render provides it). Falls back to local sqlite.
-if dj_database_url is not None:
-    DATABASES = {
-        'default': dj_database_url.config(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}', conn_max_age=600)
+# Database — local sqlite only
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 
 # Password validation
@@ -127,27 +124,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# Use compressed manifest storage for production with WhiteNoise
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Local dev: use default staticfiles storage
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-# Media files (uploaded images etc.)
-# In this project the default dev media location is `curtains/`. For production,
-# set MEDIA_URL and MEDIA_ROOT via environment variables if needed.
-USE_S3 = os.environ.get('USE_S3', 'False').lower() in ('1', 'true', 'yes')
-
-if USE_S3:
-    # S3-backed media (django-storages)
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
-    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
-    MEDIA_URL = os.environ.get('MEDIA_URL', f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/')
-    MEDIA_ROOT = None
-else:
-    MEDIA_URL = os.environ.get('MEDIA_URL', '/curtains/')
-    MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'curtains')))
+# Media files (uploaded images etc.) — local development defaults
+MEDIA_URL = os.environ.get('MEDIA_URL', '/curtains/')
+MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'curtains')))
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
