@@ -47,6 +47,7 @@ class PardaAdmin(admin.ModelAdmin):
         "pieces_total",
         "vitrina_plus_pieces",
     )
+    search_fields = ("model",)
 
     list_display = (
         "model",
