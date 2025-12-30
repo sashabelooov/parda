@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from .models import Parda, RulonKusok, PardaImage
+from django.contrib.admin import SimpleListFilter
+from django.contrib import admin
+from django.db.models import Q
+
 
 
 class RulonKusokInline(admin.TabularInline):
@@ -27,6 +31,49 @@ class PardaImageInline(admin.TabularInline):
     image_preview.short_description = "Ko‘rinish"
 
 
+
+
+class BoyiSearchFilter(admin.SimpleListFilter):
+    title = "Boyi bo'yicha izlash"
+    parameter_name = "boyi_search"
+    template = "admin/boyi_input_filter.html"
+
+    def lookups(self, request, model_admin):
+        return ()  # Keep empty
+
+    def has_output(self):
+        return True  # Optional: force show even if no choices
+
+    def queryset(self, request, queryset):
+        value = request.GET.get("boyi_search")
+        if value:
+            try:
+                boyi_val = float(value.replace(",", "."))
+                return queryset.filter(boyi=boyi_val)
+            except ValueError:
+                return queryset.none()
+        return queryset
+    
+    
+class ModelSearchFilter(admin.SimpleListFilter):
+    title = "Model bo'yicha izlash"
+    parameter_name = "model_search"
+    template = "admin/boyi_input_filter.html"
+
+    def lookups(self, request, model_admin):
+        return ()
+
+    def has_output(self):
+        return True
+
+    def queryset(self, request, queryset):
+        value = request.GET.get("model_search")
+        if value:
+            return queryset.filter(model__icontains=value)
+        return queryset
+    
+    
+
 @admin.register(Parda)
 class PardaAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -47,7 +94,9 @@ class PardaAdmin(admin.ModelAdmin):
         "pieces_total",
         "vitrina_plus_pieces",
     )
-    search_fields = ("model",)
+    # search_fields = ("model",)
+    
+    list_filter = (BoyiSearchFilter, ModelSearchFilter)
 
     list_display = (
         "model",

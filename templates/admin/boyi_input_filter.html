@@ -1,0 +1,21 @@
+{% load i18n %}
+<h3>{% trans title %}</h3>
+<div style="margin: 10px 0;">
+  <form method="GET" style="display:flex; align-items:center; gap:8px;">
+    <input type="text"
+           name="{{ spec.parameter_name }}"
+           value="{{ spec.value|default_if_none:'' }}"
+           placeholder="Model"
+           style="width:120px; padding:4px 8px; font-size:13px; border:1px solid #ccc; border-radius:4px;" />
+    <button type="submit"
+            style="padding:4px 12px; font-size:13px; background:#417690; color:white; border:none; border-radius:4px; cursor:pointer;">
+      {% trans "Apply" %}
+    </button>
+    {% if spec.value %}
+      <a href="?{{ cl.get_query_string|safe }}"
+         style="font-size:13px; color:#417690; text-decoration:none;">
+        {% trans "Clear" %}
+      </a>
+    {% endif %}
+  </form>
+</div>

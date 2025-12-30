@@ -60,7 +60,9 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,11 +169,6 @@ TELEGRAM_BOT_TOKEN = ''
 # For single group:
 TELEGRAM_CHAT_ID = ''
 
-# OR for multiple groups:
-# TELEGRAM_CHAT_IDS = [
-#     '-1001234567890',  # Group 1
-#     '-1009876543210',  # Group 2
-# ]
 
 
 # ============================================
