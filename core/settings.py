@@ -29,10 +29,21 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
 # ALLOWED_HOSTS: comma-separated list
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", os.environ.get("RENDER_EXTERNAL_HOSTNAME", "")).split(",") if os.environ.get("ALLOWED_HOSTS") or os.environ.get("RENDER_EXTERNAL_HOSTNAME") else []
+# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", os.environ.get("RENDER_EXTERNAL_HOSTNAME", "")).split(",") if os.environ.get("ALLOWED_HOSTS") or os.environ.get("RENDER_EXTERNAL_HOSTNAME") else []
 
-
+ALLOWED_HOSTS = '*' 
 # Application definition
+
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://grandstor.uz",
+    "https://grandstor.uz"
+]
+
+
+
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -164,12 +175,14 @@ CELERY_TASK_TIME_LIMIT = 900
 # ============================================
 
 # Get bot token from @BotFather on Telegram
-TELEGRAM_BOT_TOKEN = ''
+
 
 # For single group:
-TELEGRAM_CHAT_ID = ''
 
 
+
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
 
 # ============================================
 # LOGGING (Optional but recommended)
