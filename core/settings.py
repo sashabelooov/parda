@@ -131,6 +131,89 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 MEDIA_URL = os.environ.get('MEDIA_URL', '/curtains/')
 MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'curtains')))
 
+
+
+
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+# Store task results in Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Serialization settings
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+# Timezone settings
+CELERY_TIMEZONE = 'Asia/Tashkent'
+CELERY_ENABLE_UTC = False
+
+# Optional: Task result expiration time (in seconds)
+CELERY_RESULT_EXPIRES = 3600
+
+# Optional: Task time limit (15 minutes max per task)
+CELERY_TASK_TIME_LIMIT = 900
+
+
+# ============================================
+# TELEGRAM CONFIGURATION
+# ============================================
+
+# Get bot token from @BotFather on Telegram
+TELEGRAM_BOT_TOKEN = ''
+
+# For single group:
+TELEGRAM_CHAT_ID = ''
+
+# OR for multiple groups:
+# TELEGRAM_CHAT_IDS = [
+#     '-1001234567890',  # Group 1
+#     '-1009876543210',  # Group 2
+# ]
+
+
+# ============================================
+# LOGGING (Optional but recommended)
+# ============================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'celery.log',
+        },
+    },
+    'loggers': {
+        'celery': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'parda': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Ensure MEDIA_ROOT is inside the project and writable. If a relative path was
 # provided, resolve it against BASE_DIR. If the resolved path is outside of
 # BASE_DIR, fall back to BASE_DIR/'curtains'. Create the directory if missing
@@ -178,3 +261,7 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True').lower() in ('1', 'true', 'yes')
     SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD', 'True').lower() in ('1', 'true', 'yes')
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+
+
